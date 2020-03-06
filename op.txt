@@ -1,3 +1,0 @@
-File reading .... : test.pcap
-
-Length :  649
