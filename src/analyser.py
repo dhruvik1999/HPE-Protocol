@@ -22,13 +22,20 @@ def get_all_prot_used_with_frq(frames):
 				protos[prot]=1
 	return protos
 
+def get_time_pcap_file(frames):
+	return frames[ len(frames)-1 ].time-frames[0].time
+
+def disp_prot_details(frames):
+	total_time = get_time_pcap_file(frames)
+	protos = get_all_prot_used_with_frq(frames)
+	print("protocol --> frequancy --> average")
+	for proto in protos:
+		print(proto," --> ",protos[proto]," --> ", protos[proto]/total_time)
+
 
 def main():
-	frames = readFile('test.pcap')
-	protos = get_all_prot_used_with_frq(frames)
-	for proto in protos:
-		print(proto," --> ",protos[proto])
-
+	frames = readFile('../data/test.pcap')
+	disp_prot_details(frames)
 
 if __name__ == '__main__':
 	main()
