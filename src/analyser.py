@@ -1,5 +1,8 @@
 from scapy.all import *
 
+protocol_to_frames = {}
+protos = {}
+
 def readFile(addr):
 	return rdpcap(addr)
 
@@ -11,14 +14,19 @@ def get_all_prot(frame):
 		protos.append(frame.name)
 	return protos
 
-
 def get_all_prot_used_with_frq(frames):
-	protos={}
-	for frame in frames:
+	global protocol_to_frames
+	global protos
+	
+	for i in range(len(frames)):
+		frame=frames[i]
 		for prot in get_all_prot(frame):
 			if prot in protos:
+				protocol_to_frames[prot].append(i)
 				protos[prot]+=1
 			else:
+				protocol_to_frames[prot]=list()
+				protocol_to_frames[prot].append(i)
 				protos[prot]=1
 	return protos
 
@@ -35,9 +43,7 @@ def disp_prot_details(frames):
 def main():
 	frames = readFile('../data/test.pcap')	
 	disp_prot_details(frames)
-	for frame in frames:
-		frame.show()
-		pass
+	print(protocol_to_frames)
 
 if __name__ == '__main__':
 	main()
