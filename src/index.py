@@ -20,6 +20,7 @@ def search_for_file_path ():
 	return None
 
 def analyse():
+	
 	file_path_variable = search_for_file_path()
 	frames = analyser.readFile(file_path_variable)
 	analyser.disp_prot_details(frames)

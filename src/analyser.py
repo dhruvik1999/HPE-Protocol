@@ -32,10 +32,12 @@ def disp_prot_details(frames):
 	for proto in protos:
 		print(proto," --> ",protos[proto]," --> ", protos[proto]/total_time)
 
-
 def main():
-	frames = readFile('../data/test.pcap')
+	frames = readFile('../data/test.pcap')	
 	disp_prot_details(frames)
+	for frame in frames:
+		frame.show()
+		pass
 
 if __name__ == '__main__':
 	main()
