@@ -1,30 +1,40 @@
 from tkinter import *
-from tkinter import filedialog
-import os
-import analyser
+from tkinter import ttk
 
-window = Tk()
-window.title("Protocol Analyzer")
-window.geometry('1100x1000')
+class Window(Frame):
+	def __init__(self, master=None):
+		Frame.__init__(self, master)
+		self.master = master
+		self.init_window()
 
-lbl = Label(window,text="Protocol Analyzer",  font=("Arial Bold", 20))
-lbl.grid(column=0,row=0)
+	def init_window(self):
+		self.master.title("GUI")
+		self.pack(fill=BOTH, expand=1)
+		lbl1 = Label(self,text="Protocol Analyser")
+		lbl1.place(x=0,y=0)
 
-def search_for_file_path ():
-	currdir = os.getcwd()
-	tempdir = filedialog.askopenfilename(parent=window, initialdir=currdir, title='Please select a directory')
-	if len(tempdir) > 0:
-		print ("File : %s" % tempdir)
-		L2 = Label(window, text="FILE : "+tempdir,).grid(row=5,column=0)
-		return tempdir
-	return None
+		quitButton = Button(self, text="Analys")
+		quitButton.place(x=0, y=40)
+		quitButton = Button(self, text="Intrution Detection")
+		quitButton.place(x=80, y=40)
 
-def analyse():
-	file_path_variable = search_for_file_path()
-	frames = analyser.readFile(file_path_variable)
-	analyser.disp_prot_details(frames)
+		self.make_protocol_table()
 
+	def make_protocol_table(self):
+		treedata = [('column 1', 'column 2'), ('column 2', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 2', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 2', 'column 2'),('column 1', 'column 2'),('column 2', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 2', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 1', 'column 2'),('column 2', 'column 2')]
+		column_names = ("heading1", "heading2")
+		scrollbar = ttk.Scrollbar(self)
+		tree = ttk.Treeview(self, columns = column_names, yscrollcommand = scrollbar.set)
+		scrollbar.pack(side = 'right', fill= Y)
 
-B=Button(window, text ="Analyse",command=analyse).grid(row=3,column=0,)
+		for x in treedata:
+			tree.insert('', 'end', values=x)
+		for col in column_names: 
+			tree.heading(col, text = "Title")
+		scrollbar.config(command=tree.yview)
+		tree.place(x=0,y=100)
 
-window.mainloop()
+root = Tk()
+root.geometry("1000x1000")
+app = Window(root)
+root.mainloop() 

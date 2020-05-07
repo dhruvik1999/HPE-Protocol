@@ -3,6 +3,7 @@ from scapy.all import *
 protocol_to_frames = {}
 protos = {}
 frames = []
+total_time = 0
 
 def readFile(addr):
 	return rdpcap(addr)
@@ -56,6 +57,7 @@ def get_time_pcap_file(frames):
 	return frames[ len(frames)-1 ].time-frames[0].time
 
 def disp_prot_details(frames):
+	global protos
 	total_time = get_time_pcap_file(frames)
 	protos = get_all_prot_used_with_frq(frames)
 	print("protocol --> frequancy --> average")
