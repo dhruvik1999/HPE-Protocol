@@ -75,6 +75,12 @@ class Window(Frame):
 		opt.config(width=90, font=('Helvetica', 12))
 		opt.place(x=0,y=100)
 
+		self.scrollbar = ttk.Scrollbar(self)
+		self.column_names = ("Source MAC","Frequancy")
+		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
+		self.scrollbar.pack(side = 'right', fill= Y)
+
+
 		self.variable.trace("w",self.opt_callback)
 
 	def opt_callback(self,*args):
@@ -86,17 +92,13 @@ class Window(Frame):
 		for addr in src_addr:
 			treedata.append((addr,src_addr[addr]))
 
-		column_names = ("Source MAC","Frequancy")
-		scrollbar = ttk.Scrollbar(self)
-		tree = ttk.Treeview(self, columns = column_names, yscrollcommand = scrollbar.set)
-		scrollbar.pack(side = 'right', fill= Y)
-
-		for col in column_names: 
-			tree.heading(col, text = col)
+		self.tree.delete(*self.tree.get_children())
+		for col in self.column_names: 
+			self.tree.heading(col, text = col)
 		for x in treedata:
-			tree.insert('', 'end', values=x)
-		scrollbar.config(command=tree.yview)
-		tree.place(x=0,y=150,height=600,width=900)
+			self.tree.insert('', 'end', values=x)
+		self.scrollbar.config(command=self.tree.yview)
+		self.tree.place(x=0,y=150,height=600,width=900)
 
 
 root = Tk()
