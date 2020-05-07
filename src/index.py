@@ -67,12 +67,20 @@ class Window(Frame):
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 		print("-->",self.protocol_to_frames)
 		# anl.protocol_to_frames=self.protocol_to_frames
-		print( anl.get_all_src_addr('TCP') )
+		# print( anl.get_all_src_addr('TCP') )
+		self.variable = StringVar(self)
+		self.variable.set(self.protos)
 
+		opt=OptionMenu(self, self.variable, *self.protos)
+		opt.config(width=90, font=('Helvetica', 12))
+		opt.place(x=0,y=100)
 
+		self.variable.trace("w",self.opt_callback)
 
-
-
+	def opt_callback(self,*args):
+		rt=self.variable.get()
+		print(rt)
+		print( anl.get_all_src_addr(rt) )
 
 
 root = Tk()
