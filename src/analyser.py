@@ -6,7 +6,9 @@ frames = []
 total_time = 0
 
 def readFile(addr):
-	return rdpcap(addr)
+	global frames
+	frames=rdpcap(addr)
+	return frames
 
 def get_all_prot(frame):
 	protos = []
@@ -24,13 +26,23 @@ def get_all_prot_used_with_frq(frames):
 		frame=frames[i]
 		for prot in get_all_prot(frame):
 			if prot in protos:
-				protocol_to_frames[prot].append(i)
 				protos[prot]+=1
+			else:
+				protos[prot]=1
+	return protos
+
+def get_protocol_to_frames(frames):
+	global protocol_to_frames
+
+	for i in range(len(frames)):
+		frame=frames[i]
+		for prot in get_all_prot(frame):
+			if prot in protocol_to_frames:
+				protocol_to_frames[prot].append(i)
 			else:
 				protocol_to_frames[prot]=list()
 				protocol_to_frames[prot].append(i)
-				protos[prot]=1
-	return protos
+	return protocol_to_frames
 
 def get_all_src_addr(proto):
 	src_cnt = {}
@@ -43,15 +55,6 @@ def get_all_src_addr(proto):
 		else:
 			src_cnt[src]=1
 	return src_cnt
-
-
-def get_proto_and_src_addr():
-	print(protos)
-	for proto in protos:
-		print("--------------",proto,"-----------------")
-		src_cnt=get_all_src_addr(proto)
-		print(src_cnt)
-
 
 def get_time_pcap_file(frames):
 	return frames[ len(frames)-1 ].time-frames[0].time
@@ -71,7 +74,7 @@ def main():
 	disp_prot_details(frames)
 	# print(protocol_to_frames)
 	print(protos)
-	get_proto_and_src_addr()
+	# get_proto_and_src_addr(protos)
 
 if __name__ == '__main__':
 	main()

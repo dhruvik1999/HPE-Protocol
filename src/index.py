@@ -12,6 +12,8 @@ class Window(Frame):
 		self.frames=None
 		self.protos=None
 		self.total_time=None
+		self.src_cnt=None
+		self.protocol_to_frames=None
 
 	def init_window(self):
 		self.master.title("GUI")
@@ -32,7 +34,7 @@ class Window(Frame):
 			print("File not inserted...")
 			exit(0)
 
-		self.make_protocol_table()
+		self.make_distrution_table()
 
 	def make_protocol_table(self):
 		self.frames = anl.readFile(self.filename)
@@ -55,6 +57,23 @@ class Window(Frame):
 			tree.insert('', 'end', values=x)
 		scrollbar.config(command=tree.yview)
 		tree.place(x=0,y=100,height=600,width=900)
+
+	def make_distrution_table(self):
+		self.frames = anl.readFile(self.filename)
+		self.total_time = anl.get_time_pcap_file(self.frames)
+		self.protos = anl.get_all_prot_used_with_frq(self.frames)
+		print(self.protos)
+
+		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
+		print("-->",self.protocol_to_frames)
+		# anl.protocol_to_frames=self.protocol_to_frames
+		print( anl.get_all_src_addr('TCP') )
+
+
+
+
+
+
 
 root = Tk()
 root.geometry("1000x1000")
