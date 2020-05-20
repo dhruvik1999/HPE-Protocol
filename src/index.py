@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 import analyser as anl
+import matplotlib.pyplot as plt 
 
 class Window(Frame):
 	def __init__(self, master=None):
@@ -46,7 +47,7 @@ class Window(Frame):
 
 		graphButton = Button(self, text="Genrate graph",command=self.make_graph )
 		graphButton.place(x=700, y=40)
-		
+
 		for proto in self.protos:
 			treedata.append( ( proto , self.protos[proto] ,self.protos[proto]/self.total_time) )
 
@@ -73,6 +74,15 @@ class Window(Frame):
 		# tree.delete(*tree.get_children())
 
 	def make_graph(self):
+		print(self.protos.keys())
+		print(self.protos.values())
+		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequancy")
+		plt.plot(list(self.protos),[ i/self.total_time for i in list(self.protos.values()) ] , label = "Average Frequancy")  
+		plt.xlabel('') 
+		plt.ylabel('Protocol') 
+		plt.title('Protocol vs Frequancy and Average Frequancy') 
+		plt.legend() 
+		plt.show()
 		pass
 
 	def make_distrution_table(self):
