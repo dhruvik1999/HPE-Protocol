@@ -22,13 +22,10 @@ class Window(Frame):
 	def init_window(self):
 		self.master.title("GUI")
 		self.pack(fill=BOTH, expand=1)
-		lbl1 = Label(self,text="Protocol Analyser")
-		lbl1.place(x=0,y=0)
-
 		quitButton = Button(self, text="Analys", command=self.make_protocol_table)
-		quitButton.place(x=0, y=40)
+		quitButton.place(x=0, y=0)
 		quitButton = Button(self, text="Intrution Detection",command=self.make_distrution_table)
-		quitButton.place(x=80, y=40)
+		quitButton.place(x=80, y=0)
 
 	def make_protocol_table(self):
 		currdir = os.getcwd()
@@ -52,7 +49,7 @@ class Window(Frame):
 			pass
 
 		self.graphButton = Button(self, text="Genrate graph",command=self.make_protocol_table_graph )
-		self.graphButton.place(x=700, y=40)
+		self.graphButton.place(x=700, y=0)
 
 		for proto in self.protos:
 			treedata.append( ( proto , self.protos[proto] ,self.protos[proto]/self.total_time) )
@@ -113,7 +110,7 @@ class Window(Frame):
 			pass
 
 		self.graphButton = Button(self, text="Genrate graph",command=self.make_distrution_table_graph )
-		self.graphButton.place(x=700, y=40)
+		self.graphButton.place(x=700, y=0)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 		print("-->",self.protocol_to_frames)
@@ -124,7 +121,7 @@ class Window(Frame):
 
 		self.opt=OptionMenu(self, self.variable, "Select the protocol" ,*self.protos)
 		self.opt.config(width=100, font=('Helvetica', 12))
-		self.opt.place(x=0,y=100)
+		self.opt.place(x=0,y=50)
 
 		try:
 			if self.tree != None:
