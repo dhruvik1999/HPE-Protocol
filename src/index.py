@@ -39,14 +39,18 @@ class Window(Frame):
 		self.printLog("UI/UX", "window", "tkinter initiated")
 		self.master.title("HPE - Protocol Analyser")
 		self.pack(fill=BOTH, expand=1)
-		quitButton = Button(self, text="Analys", command=self.make_protocol_table)
+
+		lbl = Label(self,text="HPE Protocol Analyser",font=("Courier", 25))
+		lbl.place(x=50,y=325)
+
+		quitButton = Button(self, text="Protocol Analysis", command=self.make_protocol_table)
 		quitButton.place(x=0, y=0)
-		quitButton = Button(self, text="Intrution Detection",command=self.make_distrution_table)
-		quitButton.place(x=80, y=0)
+		quitButton = Button(self, text="Intrution Analysis",command=self.make_distrution_table)
+		quitButton.place(x=150, y=0)
 
 	"""
 		This function will make the table for protocol analyser. It has 3 coloumns, 1st for name of protocol
-		and 2nd for frequancy of the protocol, and 3rd for average packet per second.
+		and 2nd for Frequency of the protocol, and 3rd for average packet per second.
 
 		@param null
 		@return null
@@ -54,7 +58,7 @@ class Window(Frame):
 	def make_protocol_table(self):
 		currdir = os.getcwd()
 		self.printLog("Ui/UX","wondow","selecting file from system")
-		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
+		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select pcap file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
 		if self.filename!=():
 			self.printLog("FileSystem","pcap file",self.filename)
 		else:
@@ -75,14 +79,14 @@ class Window(Frame):
 		except:
 			pass
 
-		self.graphButton = Button(self, text="Genrate graph",command=self.make_protocol_table_graph )
+		self.graphButton = Button(self, text="Generate graph",command=self.make_protocol_table_graph )
 		self.graphButton.place(x=700, y=0)
 
 		self.printLog("System","Write","data is appending to the table")
 		for proto in self.protos:
 			treedata.append( ( proto , self.protos[proto] ,self.protos[proto]/self.total_time) )
 
-		column_names = ("Protocols", "Frequancy","Average Frq")
+		column_names = ("Protocols", "Frequency","Average Frequency")
 
 		try:
 			if self.tree != None:
@@ -97,6 +101,7 @@ class Window(Frame):
 		self.scrollbar = ttk.Scrollbar(self)
 		self.tree = ttk.Treeview(self, columns = column_names, yscrollcommand = self.scrollbar.set)
 		self.scrollbar.pack(side = 'right', fill= Y)
+		self.tree['show'] = 'headings'
 
 		self.printLog("UI/UX","window","Table is being printing..")
 
@@ -117,11 +122,11 @@ class Window(Frame):
 	def make_protocol_table_graph(self):
 		self.printLog("UI/UX","window","Graph initiated")
 		self.printLog("System","pyplot","")
-		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequancy",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
-		plt.plot(list(self.protos),[ i/self.total_time for i in list(self.protos.values()) ] , label = "Average Frequancy",color='orange')  
-		plt.xlabel('') 
-		plt.ylabel('Protocol') 
-		plt.title('Protocol vs Frequancy and Average Frequancy') 
+		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequency",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
+		plt.plot(list(self.protos),[ i/self.total_time for i in list(self.protos.values()) ] , label = "Average Frequency",color='orange')  
+		plt.xlabel('Frequency') 
+		plt.ylabel('Protocols') 
+		plt.title('Protocol vs Frequency and Average Frequency') 
 		plt.legend() 
 		plt.show()
 		self.printLog("UI/UX","window","Graph terminated")
@@ -157,7 +162,7 @@ class Window(Frame):
 		except:
 			pass
 
-		self.graphButton = Button(self, text="Genrate graph",command=self.make_distrution_table_graph )
+		self.graphButton = Button(self, text="generate graph",command=self.make_distrution_table_graph )
 		self.graphButton.place(x=300, y=120)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
@@ -179,11 +184,12 @@ class Window(Frame):
 
 		self.printLog("UI/UX","window","Select bar and filter is showing")
 		self.scrollbar = ttk.Scrollbar(self)
-		self.column_names = ("Source MAC","Frequancy")
+		self.column_names = ("Source MAC","Frequency")
 		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
 		self.scrollbar.pack(side = 'right', fill= Y)
 		self.variable.trace("w",self.opt_callback)
-
+		self.tree['show'] = 'headings'
+		
 		self.lab_flt = Label(self,text="Filter : Minimum packets")
 		self.lab_flt.place(x=0,y=100)
 
