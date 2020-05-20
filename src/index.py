@@ -110,7 +110,7 @@ class Window(Frame):
 			pass
 
 		self.graphButton = Button(self, text="Genrate graph",command=self.make_distrution_table_graph )
-		self.graphButton.place(x=700, y=0)
+		self.graphButton.place(x=300, y=120)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 		print("-->",self.protocol_to_frames)
@@ -136,6 +136,39 @@ class Window(Frame):
 		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
 		self.scrollbar.pack(side = 'right', fill= Y)
 		self.variable.trace("w",self.opt_callback)
+
+		self.lab_flt = Label(self,text="Filter : Minimum packets")
+		self.lab_flt.place(x=0,y=100)
+
+		self.flt=Entry(self)
+		self.flt.place(x=0,y=125)
+
+		self.but_apply=Button(self,text="Apply",command=self.filter_apply)
+		self.but_apply.place(x=180,y=120)
+
+	def filter_apply(self):
+		try:
+			flt_val=int(eval(self.flt.get()))
+			print("Filter Value : ",flt_val)
+			rt=self.variable.get()
+			print(rt)
+			self.choosan_name = rt
+			if rt == 'Select the protocol':
+				return	
+			self.src_addr=anl.get_all_src_addr(rt)
+			treedata = []
+			for addr in self.src_addr:
+				if int(self.src_addr[addr]) >= int(flt_val): 
+					treedata.append((addr,self.src_addr[addr]))
+			self.tree.delete(*self.tree.get_children())
+			for col in self.column_names: 
+				self.tree.heading(col, text = col)
+			for x in treedata:
+				self.tree.insert('', 'end', values=x)
+			self.scrollbar.config(command=self.tree.yview)
+			self.tree.place(x=0,y=150,height=550,width=970)
+		except:
+			print("Error: Filter function has somthing wrong ....")
 
 	def opt_callback(self,*args):
 		rt=self.variable.get()
