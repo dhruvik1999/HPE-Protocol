@@ -18,6 +18,7 @@ class Window(Frame):
 		self.tree = None
 		self.scrollbar = None
 		self.opt = None
+		self.flt_val=0
 
 	def init_window(self):
 		self.master.title("GUI")
@@ -82,8 +83,8 @@ class Window(Frame):
 	def make_protocol_table_graph(self):
 		print(self.protos.keys())
 		print(self.protos.values())
-		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequancy")
-		plt.plot(list(self.protos),[ i/self.total_time for i in list(self.protos.values()) ] , label = "Average Frequancy")  
+		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequancy",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
+		plt.plot(list(self.protos),[ i/self.total_time for i in list(self.protos.values()) ] , label = "Average Frequancy",color='orange')  
 		plt.xlabel('') 
 		plt.ylabel('Protocol') 
 		plt.title('Protocol vs Frequancy and Average Frequancy') 
@@ -148,8 +149,8 @@ class Window(Frame):
 
 	def filter_apply(self):
 		try:
-			flt_val=int(eval(self.flt.get()))
-			print("Filter Value : ",flt_val)
+			self.flt_val=int(eval(self.flt.get()))
+			print("Filter Value : ",self.flt_val)
 			rt=self.variable.get()
 			print(rt)
 			self.choosan_name = rt
@@ -158,7 +159,7 @@ class Window(Frame):
 			self.src_addr=anl.get_all_src_addr(rt)
 			treedata = []
 			for addr in self.src_addr:
-				if int(self.src_addr[addr]) >= int(flt_val): 
+				if int(self.src_addr[addr]) >= int(self.flt_val): 
 					treedata.append((addr,self.src_addr[addr]))
 			self.tree.delete(*self.tree.get_children())
 			for col in self.column_names: 
@@ -192,10 +193,21 @@ class Window(Frame):
 
 	def make_distrution_table_graph(self):
 		if self.src_addr != None:
-			plt.plot(list(self.src_addr),list(self.src_addr.values()) , label = "Number of packets")
+			x_list=list()
+			y_list=list()
+			y_thr=list()
+			for sd in self.src_addr:
+				if int( self.src_addr[sd] ) >= self.flt_val:
+					x_list.append(sd)
+					y_list.append(self.src_addr[sd])
+					y_thr.append(self.flt_val)
+			plt.plot(x_list, y_list , label = "Number of packets",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
+			plt.plot(x_list, y_thr , label = "Threshold", color='red')
+
+
 			plt.xlabel('Mac Address') 
 			plt.ylabel('Number of packets') 
-			plt.title(str(self.choosan_name) + ' : Packet vs Senders Mac Address') 
+			plt.title(str(self.choosan_name) + ' : Packet vs Sender\'s Mac Address') 
 			plt.legend()
 			plt.show()
 		else:
