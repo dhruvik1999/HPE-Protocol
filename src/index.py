@@ -20,9 +20,21 @@ class Window(Frame):
 		self.opt = None
 		self.flt_val=0
 
+	"""
+		This function will print the logs
+		
+		@param head,title,text
+		@return null
+	"""
 	def printLog(self,head,title,text):
 		print("[ ",head," ] ", title, " : ", text)
 
+	"""
+		Default function for Tkinter Ui python library
+
+		@param null
+		@return null
+	"""
 	def init_window(self):
 		self.printLog("UI/UX", "window", "tkinter initiated")
 		self.master.title("HPE - Protocol Analyser")
@@ -32,6 +44,13 @@ class Window(Frame):
 		quitButton = Button(self, text="Intrution Detection",command=self.make_distrution_table)
 		quitButton.place(x=80, y=0)
 
+	"""
+		This function will make the table for protocol analyser. It has 3 coloumns, 1st for name of protocol
+		and 2nd for frequancy of the protocol, and 3rd for average packet per second.
+
+		@param null
+		@return null
+	"""
 	def make_protocol_table(self):
 		currdir = os.getcwd()
 		self.printLog("Ui/UX","wondow","selecting file from system")
@@ -87,8 +106,14 @@ class Window(Frame):
 			self.tree.insert('', 'end', values=x)
 		self.scrollbar.config(command=self.tree.yview)
 		self.tree.place(x=0,y=100,height=600,width=970)
-		# tree.delete(*tree.get_children())
 
+	"""
+		This function makes graph using pyplot python library, This grah contains name of protocol vs number of packets 
+		and average packets.
+
+		@paaram null
+		@return null
+	"""	
 	def make_protocol_table_graph(self):
 		self.printLog("UI/UX","window","Graph initiated")
 		self.printLog("System","pyplot","")
@@ -102,6 +127,13 @@ class Window(Frame):
 		self.printLog("UI/UX","window","Graph terminated")
 		pass
 
+	"""
+		This function will print the tanle with 2 coloumns. First coloumn for sender's mac address taken from Ethernet packet
+		ans 2nd coloumn for number of packet sent by this mac address.
+
+		@param null
+		@return null
+	"""
 	def make_distrution_table(self):
 		currdir = os.getcwd()
 		self.printLog("Ui/UX","wondow","selecting file from system")
@@ -161,6 +193,12 @@ class Window(Frame):
 		self.but_apply=Button(self,text="Apply",command=self.filter_apply)
 		self.but_apply.place(x=180,y=120)
 
+	"""
+		This function will filter out the query given by the user and shows in the table form.
+
+		@param null
+		@return null
+	"""
 	def filter_apply(self):
 		try:
 			self.printLog("System","Filter","Filter processing start")
@@ -187,7 +225,12 @@ class Window(Frame):
 		except:
 			self.printLog("System","Filter","something is wrong")
 
+	"""
+		This is callback funtion for menu bar for selecting the protocols.
 
+		@param *args (default)
+		@return null
+	"""
 	def opt_callback(self,*args):
 		rt=self.variable.get()
 		self.printLog("System","Option selectd",rt)
@@ -210,6 +253,12 @@ class Window(Frame):
 		self.scrollbar.config(command=self.tree.yview)
 		self.tree.place(x=0,y=150,height=550,width=970)
 
+	"""
+		This function makes graph using pyplot python library, This grah contains senders mac address vs number of packets by this mac address
+
+		@paaram null
+		@return null
+	"""	
 	def make_distrution_table_graph(self):
 		if self.src_addr != None:
 			x_list=list()
@@ -233,7 +282,11 @@ class Window(Frame):
 		else:
 			self.printLog("System","process","Something is wrong with making intrution table")
 
-root = Tk()
-root.geometry("1000x700")
-app = Window(root)
-root.mainloop() 
+def main():
+	root = Tk()
+	root.geometry("1000x700")
+	app = Window(root)
+	root.mainloop() 
+
+if __name__ == '__main__':
+	main()

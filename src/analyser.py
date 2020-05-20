@@ -1,15 +1,24 @@
 from scapy.all import *
 
+"""
+	All main datastructures to use further.
+"""
 protocol_to_frames = {}
 protos = {}
 frames = []
 total_time = 0
 
+"""
+	This functions reads the pcap file of addr address. rdpcap is the function of Scapy python library.
+
+	@param addr address of the file
+	@return frames all the freames from pcap file
+"""
 def readFile(addr):
 	global frames
 	frames=rdpcap(addr)
 	return frames
-
+	
 def get_all_prot(frame):
 	protos = []
 	protos.append(frame.name)
