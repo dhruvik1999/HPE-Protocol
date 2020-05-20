@@ -34,7 +34,6 @@ class Window(Frame):
 
 	def make_protocol_table(self):
 		currdir = os.getcwd()
-		self.printLog("Ui/UX","wondow","selecting file from system")
 		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
 		if self.filename!=():
 			self.printLog("FileSystem","pcap file",self.filename)
@@ -104,21 +103,16 @@ class Window(Frame):
 
 	def make_distrution_table(self):
 		currdir = os.getcwd()
-		self.printLog("Ui/UX","wondow","selecting file from system")
 		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
 		if self.filename!=():
-			self.printLog("FileSystem","pcap file",self.filename)
+			print (self.filename)
 		else:
-			self.printLog("FileSystem","Error","File not entered...")
-			self.printLog("System","Exit","")
+			print("File not inserted...")
 			exit(0)
-
-		self.printLog("FileSystem","Read","data reading from file")	
 		self.frames = anl.readFile(self.filename)
-		self.printLog("System","Process","counting total time interval")
 		self.total_time = anl.get_time_pcap_file(self.frames)
-		self.printLog("System","Process","counting frquancy of each protocol")
 		self.protos = anl.get_all_prot_used_with_frq(self.frames)
+		print(self.protos)
 
 		try:
 			self.graphButton.destroy()
@@ -129,7 +123,9 @@ class Window(Frame):
 		self.graphButton.place(x=300, y=120)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
-
+		print("-->",self.protocol_to_frames)
+		# anl.protocol_to_frames=self.protocol_to_frames
+		# print( anl.get_all_src_addr('TCP') )
 		self.variable = StringVar(self)
 		self.variable.set("Select the protocol")
 
@@ -145,7 +141,6 @@ class Window(Frame):
 		except:
 			pass
 
-		self.printLog("UI/UX","window","Select bar and filter is showing")
 		self.scrollbar = ttk.Scrollbar(self)
 		self.column_names = ("Source MAC","Frequancy")
 		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
@@ -163,17 +158,15 @@ class Window(Frame):
 
 	def filter_apply(self):
 		try:
-			self.printLog("System","Filter","Filter processing start")
 			self.flt_val=int(eval(self.flt.get()))
-			self.printLog("System","Filter value",self.flt_val)
+			print("Filter Value : ",self.flt_val)
 			rt=self.variable.get()
-			self.printLog("System","Option selectd",rt)
+			print(rt)
 			self.choosan_name = rt
 			if rt == 'Select the protocol':
 				return	
 			self.src_addr=anl.get_all_src_addr(rt)
 			treedata = []
-			self.printLog("System","Write","data is appending in table")
 			for addr in self.src_addr:
 				if int(self.src_addr[addr]) >= int(self.flt_val): 
 					treedata.append((addr,self.src_addr[addr]))
@@ -185,20 +178,17 @@ class Window(Frame):
 			self.scrollbar.config(command=self.tree.yview)
 			self.tree.place(x=0,y=150,height=550,width=970)
 		except:
-			self.printLog("System","Filter","something is wrong")
-
+			print("Error: Filter function has somthing wrong ....")
 
 	def opt_callback(self,*args):
 		rt=self.variable.get()
-		self.printLog("System","Option selectd",rt)
+		print(rt)
 		self.choosan_name = rt
 		if rt == 'Select the protocol':
 			return	
 		self.src_addr=anl.get_all_src_addr(rt)
 
 		treedata = []
-
-		self.printLog("System","Write","data is appending in table")
 		for addr in self.src_addr:
 			treedata.append((addr,self.src_addr[addr]))
 
@@ -215,8 +205,6 @@ class Window(Frame):
 			x_list=list()
 			y_list=list()
 			y_thr=list()
-			self.printLog("UI/UX","window","Graph initiated")
-			self.printLog("System","pyplot","")
 			for sd in self.src_addr:
 				if int( self.src_addr[sd] ) >= self.flt_val:
 					x_list.append(sd)
@@ -224,14 +212,15 @@ class Window(Frame):
 					y_thr.append(self.flt_val)
 			plt.plot(x_list, y_list , label = "Number of packets",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
 			plt.plot(x_list, y_thr , label = "Threshold", color='red')
+
+
 			plt.xlabel('Mac Address') 
 			plt.ylabel('Number of packets') 
 			plt.title(str(self.choosan_name) + ' : Packet vs Sender\'s Mac Address') 
 			plt.legend()
 			plt.show()
-			self.printLog("UI/UX","window","Graph terminated")
 		else:
-			self.printLog("System","process","Something is wrong with making intrution table")
+			pass
 
 root = Tk()
 root.geometry("1000x700")
