@@ -14,6 +14,8 @@ class Window(Frame):
 		self.total_time=None
 		self.src_cnt=None
 		self.protocol_to_frames=None
+		self.tree = None
+		self.scrollbar = None
 
 	def init_window(self):
 		self.master.title("GUI")
@@ -39,23 +41,39 @@ class Window(Frame):
 		self.frames = anl.readFile(self.filename)
 		self.total_time = anl.get_time_pcap_file(self.frames)
 		self.protos = anl.get_all_prot_used_with_frq(self.frames)
-		print(self.protos)
+		# print(self.protos)
 		treedata = []
 
+		graphButton = Button(self, text="Genrate graph",command=self.make_graph )
+		graphButton.place(x=700, y=40)
+		
 		for proto in self.protos:
 			treedata.append( ( proto , self.protos[proto] ,self.protos[proto]/self.total_time) )
 
 		column_names = ("Protocols", "Frequancy","Average Frq")
-		scrollbar = ttk.Scrollbar(self)
-		tree = ttk.Treeview(self, columns = column_names, yscrollcommand = scrollbar.set)
-		scrollbar.pack(side = 'right', fill= Y)
+		
+		print(self.tree)
+		try:
+			self.tree.destroy()
+			self.opt.destroy()
+			self.scrollbar.destroy()
+		except:
+			pass
+
+		self.scrollbar = ttk.Scrollbar(self)
+		self.tree = ttk.Treeview(self, columns = column_names, yscrollcommand = self.scrollbar.set)
+		self.scrollbar.pack(side = 'right', fill= Y)
 
 		for col in column_names: 
-			tree.heading(col, text = col)
+			self.tree.heading(col, text = col)
 		for x in treedata:
-			tree.insert('', 'end', values=x)
-		scrollbar.config(command=tree.yview)
-		tree.place(x=0,y=150,height=600,width=900)
+			self.tree.insert('', 'end', values=x)
+		self.scrollbar.config(command=self.tree.yview)
+		self.tree.place(x=0,y=100,height=600,width=900)
+		# tree.delete(*tree.get_children())
+
+	def make_graph(self):
+		pass
 
 	def make_distrution_table(self):
 		currdir = os.getcwd()
@@ -77,9 +95,15 @@ class Window(Frame):
 		self.variable = StringVar(self)
 		self.variable.set("Select the protocol")
 
-		opt=OptionMenu(self, self.variable, "Select the protocol" ,*self.protos)
-		opt.config(width=100, font=('Helvetica', 12))
-		opt.place(x=0,y=100)
+		self.opt=OptionMenu(self, self.variable, "Select the protocol" ,*self.protos)
+		self.opt.config(width=100, font=('Helvetica', 12))
+		self.opt.place(x=0,y=100)
+
+		try:
+			self.tree.destroy()
+			self.scrollbar.destroy()
+		except:
+			pass
 
 		self.scrollbar = ttk.Scrollbar(self)
 		self.column_names = ("Source MAC","Frequancy")
@@ -91,7 +115,7 @@ class Window(Frame):
 		rt=self.variable.get()
 		print(rt)
 		if rt == 'Select the protocol':
-			return
+			return	
 		src_addr=anl.get_all_src_addr(rt)
 
 		treedata = []
@@ -104,10 +128,10 @@ class Window(Frame):
 		for x in treedata:
 			self.tree.insert('', 'end', values=x)
 		self.scrollbar.config(command=self.tree.yview)
-		self.tree.place(x=0,y=150,height=600,width=900)
+		self.tree.place(x=0,y=150,height=550,width=900)
 
 
 root = Tk()
-root.geometry("1000x1000")
+root.geometry("1000x700")
 app = Window(root)
 root.mainloop() 
