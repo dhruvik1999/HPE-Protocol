@@ -75,7 +75,7 @@ class Window(Frame):
 		for x in treedata:
 			self.tree.insert('', 'end', values=x)
 		self.scrollbar.config(command=self.tree.yview)
-		self.tree.place(x=0,y=100,height=600,width=900)
+		self.tree.place(x=0,y=100,height=600,width=970)
 		# tree.delete(*tree.get_children())
 
 	def make_protocol_table_graph(self):
@@ -152,7 +152,7 @@ class Window(Frame):
 		for x in treedata:
 			self.tree.insert('', 'end', values=x)
 		self.scrollbar.config(command=self.tree.yview)
-		self.tree.place(x=0,y=150,height=550,width=900)
+		self.tree.place(x=0,y=150,height=550,width=970)
 
 	def make_distrution_table_graph(self):
 		if self.src_addr != None:
