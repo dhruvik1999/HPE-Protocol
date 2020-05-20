@@ -21,22 +21,21 @@ class Window(Frame):
 		lbl1 = Label(self,text="Protocol Analyser")
 		lbl1.place(x=0,y=0)
 
-		quitButton = Button(self, text="Analys")
+		quitButton = Button(self, text="Analys", command=self.make_protocol_table)
 		quitButton.place(x=0, y=40)
-		quitButton = Button(self, text="Intrution Detection")
+		quitButton = Button(self, text="Intrution Detection",command=self.make_distrution_table)
 		quitButton.place(x=80, y=40)
 
+	def make_protocol_table(self):
 		currdir = os.getcwd()
-		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("jpeg files","*.pcap"),("all files","*.*")))
+		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
 		if self.filename!=():
 			print (self.filename)
 		else:
 			print("File not inserted...")
 			exit(0)
 
-		self.make_distrution_table()
-
-	def make_protocol_table(self):
+		print("->>",self.filename)
 		self.frames = anl.readFile(self.filename)
 		self.total_time = anl.get_time_pcap_file(self.frames)
 		self.protos = anl.get_all_prot_used_with_frq(self.frames)
@@ -56,9 +55,16 @@ class Window(Frame):
 		for x in treedata:
 			tree.insert('', 'end', values=x)
 		scrollbar.config(command=tree.yview)
-		tree.place(x=0,y=100,height=600,width=900)
+		tree.place(x=0,y=150,height=600,width=900)
 
 	def make_distrution_table(self):
+		currdir = os.getcwd()
+		self.filename =  filedialog.asksaveasfilename(parent=self,initialdir =currdir,title = "Select file",filetypes = (("Pcap files","*.pcap"),("all files","*.*")))
+		if self.filename!=():
+			print (self.filename)
+		else:
+			print("File not inserted...")
+			exit(0)
 		self.frames = anl.readFile(self.filename)
 		self.total_time = anl.get_time_pcap_file(self.frames)
 		self.protos = anl.get_all_prot_used_with_frq(self.frames)
@@ -69,23 +75,23 @@ class Window(Frame):
 		# anl.protocol_to_frames=self.protocol_to_frames
 		# print( anl.get_all_src_addr('TCP') )
 		self.variable = StringVar(self)
-		self.variable.set(self.protos)
+		self.variable.set("Select the protocol")
 
-		opt=OptionMenu(self, self.variable, *self.protos)
-		opt.config(width=90, font=('Helvetica', 12))
+		opt=OptionMenu(self, self.variable, "Select the protocol" ,*self.protos)
+		opt.config(width=100, font=('Helvetica', 12))
 		opt.place(x=0,y=100)
 
 		self.scrollbar = ttk.Scrollbar(self)
 		self.column_names = ("Source MAC","Frequancy")
 		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
 		self.scrollbar.pack(side = 'right', fill= Y)
-
-
 		self.variable.trace("w",self.opt_callback)
 
 	def opt_callback(self,*args):
 		rt=self.variable.get()
 		print(rt)
+		if rt == 'Select the protocol':
+			return
 		src_addr=anl.get_all_src_addr(rt)
 
 		treedata = []
