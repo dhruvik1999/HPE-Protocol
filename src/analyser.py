@@ -18,12 +18,17 @@ def get_all_prot(frame):
 		protos.append(frame.name)
 	return protos
 
-def get_all_prot_used_with_frq(frames):
+def get_all_prot_used_with_frq(f_frames):
 	global protocol_to_frames
 	global protos
+	global frames
 
-	for i in range(len(frames)):
-		frame=frames[i]
+	protocol_to_frames = {}
+	protos = {}
+	frames = f_frames
+
+	for i in range(len(f_frames)):
+		frame=f_frames[i]
 		for prot in get_all_prot(frame):
 			if prot in protos:
 				protos[prot]+=1
