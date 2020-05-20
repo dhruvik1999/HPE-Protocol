@@ -45,8 +45,13 @@ class Window(Frame):
 		# print(self.protos)
 		treedata = []
 
-		graphButton = Button(self, text="Genrate graph",command=self.make_graph )
-		graphButton.place(x=700, y=40)
+		try:
+			self.graphButton.destroy()
+		except:
+			pass
+
+		self.graphButton = Button(self, text="Genrate graph",command=self.make_protocol_table_graph )
+		self.graphButton.place(x=700, y=40)
 
 		for proto in self.protos:
 			treedata.append( ( proto , self.protos[proto] ,self.protos[proto]/self.total_time) )
@@ -73,7 +78,7 @@ class Window(Frame):
 		self.tree.place(x=0,y=100,height=600,width=900)
 		# tree.delete(*tree.get_children())
 
-	def make_graph(self):
+	def make_protocol_table_graph(self):
 		print(self.protos.keys())
 		print(self.protos.values())
 		plt.plot(list(self.protos),list(self.protos.values()) , label = "Frequancy")
@@ -97,6 +102,14 @@ class Window(Frame):
 		self.total_time = anl.get_time_pcap_file(self.frames)
 		self.protos = anl.get_all_prot_used_with_frq(self.frames)
 		print(self.protos)
+
+		try:
+			self.graphButton.destroy()
+		except:
+			pass
+
+		self.graphButton = Button(self, text="Genrate graph",command=self.make_distrution_table_graph )
+		self.graphButton.place(x=700, y=40)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 		print("-->",self.protocol_to_frames)
@@ -124,13 +137,14 @@ class Window(Frame):
 	def opt_callback(self,*args):
 		rt=self.variable.get()
 		print(rt)
+		self.choosan_name = rt
 		if rt == 'Select the protocol':
 			return	
-		src_addr=anl.get_all_src_addr(rt)
+		self.src_addr=anl.get_all_src_addr(rt)
 
 		treedata = []
-		for addr in src_addr:
-			treedata.append((addr,src_addr[addr]))
+		for addr in self.src_addr:
+			treedata.append((addr,self.src_addr[addr]))
 
 		self.tree.delete(*self.tree.get_children())
 		for col in self.column_names: 
@@ -140,6 +154,16 @@ class Window(Frame):
 		self.scrollbar.config(command=self.tree.yview)
 		self.tree.place(x=0,y=150,height=550,width=900)
 
+	def make_distrution_table_graph(self):
+		if self.src_addr != None:
+			plt.plot(list(self.src_addr),list(self.src_addr.values()) , label = "Number of packets")
+			plt.xlabel('Mac Address') 
+			plt.ylabel('Number of packets') 
+			plt.title(str(self.choosan_name) + ' : Packet vs Senders Mac Address') 
+			plt.legend()
+			plt.show()
+		else:
+			pass
 
 root = Tk()
 root.geometry("1000x700")
