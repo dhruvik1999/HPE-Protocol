@@ -17,6 +17,7 @@ class Window(Frame):
 		self.protocol_to_frames=None
 		self.tree = None
 		self.scrollbar = None
+		self.opt = None
 
 	def init_window(self):
 		self.master.title("GUI")
@@ -60,9 +61,12 @@ class Window(Frame):
 		
 		print(self.tree)
 		try:
-			self.tree.destroy()
-			self.opt.destroy()
-			self.scrollbar.destroy()
+			if self.tree != None:
+				self.tree.destroy()
+			if self.opt != None:
+				self.opt.destroy()
+			if self.scrollbar != None:
+				self.scrollbar.destroy()
 		except:
 			pass
 
@@ -123,8 +127,10 @@ class Window(Frame):
 		self.opt.place(x=0,y=100)
 
 		try:
-			self.tree.destroy()
-			self.scrollbar.destroy()
+			if self.tree != None:
+				self.tree.destroy()
+			if self.scrollbar != None:
+				self.scrollbar.destroy()
 		except:
 			pass
 
