@@ -164,7 +164,7 @@ class Window(Frame):
 			pass
 
 		self.graphButton = Button(self, text="generate graph",command=self.make_distrution_table_graph )
-		self.graphButton.place(x=600, y=120)
+		self.graphButton.place(x=700, y=120)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 
@@ -172,7 +172,7 @@ class Window(Frame):
 		self.variable.set("Select the protocol")
 
 		self.opt=OptionMenu(self, self.variable, "Select the protocol" ,*self.protos)
-		self.opt.config(width=100, font=('Helvetica', 12))
+		self.opt.config(width=102, font=('Helvetica', 12))
 		self.opt.place(x=0,y=50)
 
 		try:
@@ -206,7 +206,7 @@ class Window(Frame):
 		self.avg_flt.insert(END, '0')
 
 		self.but_apply=Button(self,text="Apply",command=self.filter_apply)
-		self.but_apply.place(x=450,y=120)
+		self.but_apply.place(x=400,y=120)
 
 	"""
 		This function will filter out the query given by the user and shows in the table form.
@@ -281,17 +281,24 @@ class Window(Frame):
 			y_list=list()
 			y_avg=list()
 			y_thr=list()
+			y_avg_thr=list()
 			self.printLog("UI/UX","window","Graph initiated")
 			self.printLog("System","pyplot","")
 			for sd in self.src_addr:
 				if int( self.src_addr[sd] ) >= self.flt_val and float(self.src_addr[sd]/self.total_time) >= float(self.avg_flt_val):
 					x_list.append(sd)
 					y_list.append(self.src_addr[sd])
+					y_avg.append(float(self.src_addr[sd]/self.total_time))
 					y_thr.append(self.flt_val)
+					y_avg_thr.append(self.avg_flt_val)
+
 			plt.plot(x_list, y_list , label = "Number of packets",color='green', linestyle='dashed', linewidth = 1, marker='o', markerfacecolor='blue', markersize=8)
-			plt.plot(x_list, y_thr , label = "Threshold", color='red')
+			plt.plot(x_list, y_thr , label = "Minimum packets threshold", color='red')
+			plt.plot(x_list, y_avg , label="Average packets",color="orange")
+			plt.plot(x_list, y_avg_thr , label = "Average packets threshold", color='blue')
+
 			plt.xlabel('Mac Address') 
-			plt.ylabel('Number of packets') 
+			plt.ylabel('Numbers of packets') 
 			plt.title(str(self.choosan_name) + ' : Packet vs Sender\'s Mac Address') 
 			plt.legend()
 			plt.show()
