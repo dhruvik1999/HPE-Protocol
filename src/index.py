@@ -19,6 +19,7 @@ class Window(Frame):
 		self.scrollbar = None
 		self.opt = None
 		self.flt_val=0
+		self.avg_flt_val=0
 
 	"""
 		This function will print the logs
@@ -163,7 +164,7 @@ class Window(Frame):
 			pass
 
 		self.graphButton = Button(self, text="generate graph",command=self.make_distrution_table_graph )
-		self.graphButton.place(x=300, y=120)
+		self.graphButton.place(x=600, y=120)
 
 		self.protocol_to_frames=anl.get_protocol_to_frames(self.frames)
 
@@ -184,20 +185,28 @@ class Window(Frame):
 
 		self.printLog("UI/UX","window","Select bar and filter is showing")
 		self.scrollbar = ttk.Scrollbar(self)
-		self.column_names = ("Source MAC","Frequency")
+		self.column_names = ("Source MAC","Frequency","Average Frequency")
 		self.tree = ttk.Treeview(self, columns = self.column_names, yscrollcommand = self.scrollbar.set)
 		self.scrollbar.pack(side = 'right', fill= Y)
 		self.variable.trace("w",self.opt_callback)
 		self.tree['show'] = 'headings'
-		
+
 		self.lab_flt = Label(self,text="Filter : Minimum packets")
 		self.lab_flt.place(x=0,y=100)
 
 		self.flt=Entry(self)
 		self.flt.place(x=0,y=125)
+		self.flt.insert(END, '0')
+
+		self.avg_lab_flt = Label(self,text="Filter : Minimum average packets")
+		self.avg_lab_flt.place(x=200,y=100)
+
+		self.avg_flt=Entry(self)
+		self.avg_flt.place(x=200,y=125)
+		self.avg_flt.insert(END, '0')
 
 		self.but_apply=Button(self,text="Apply",command=self.filter_apply)
-		self.but_apply.place(x=180,y=120)
+		self.but_apply.place(x=450,y=120)
 
 	"""
 		This function will filter out the query given by the user and shows in the table form.
@@ -209,7 +218,8 @@ class Window(Frame):
 		try:
 			self.printLog("System","Filter","Filter processing start")
 			self.flt_val=int(eval(self.flt.get()))
-			self.printLog("System","Filter value",self.flt_val)
+			self.avg_flt_val=float(eval(self.avg_flt.get()))
+			self.printLog("System","Filter value",self.avg_flt_val)
 			rt=self.variable.get()
 			self.printLog("System","Option selectd",rt)
 			self.choosan_name = rt
@@ -219,8 +229,8 @@ class Window(Frame):
 			treedata = []
 			self.printLog("System","Write","data is appending in table")
 			for addr in self.src_addr:
-				if int(self.src_addr[addr]) >= int(self.flt_val): 
-					treedata.append((addr,self.src_addr[addr]))
+				if int(self.src_addr[addr]) >= int(self.flt_val) and float(self.src_addr[addr]/self.total_time) >= float(self.avg_flt_val): 
+					treedata.append((addr,self.src_addr[addr],self.src_addr[addr]/self.total_time))
 			self.tree.delete(*self.tree.get_children())
 			for col in self.column_names: 
 				self.tree.heading(col, text = col)
@@ -249,7 +259,7 @@ class Window(Frame):
 
 		self.printLog("System","Write","data is appending in table")
 		for addr in self.src_addr:
-			treedata.append((addr,self.src_addr[addr]))
+			treedata.append((addr,self.src_addr[addr],self.src_addr[addr]/self.total_time))
 
 		self.tree.delete(*self.tree.get_children())
 		for col in self.column_names: 
@@ -269,11 +279,12 @@ class Window(Frame):
 		if self.src_addr != None:
 			x_list=list()
 			y_list=list()
+			y_avg=list()
 			y_thr=list()
 			self.printLog("UI/UX","window","Graph initiated")
 			self.printLog("System","pyplot","")
 			for sd in self.src_addr:
-				if int( self.src_addr[sd] ) >= self.flt_val:
+				if int( self.src_addr[sd] ) >= self.flt_val and float(self.src_addr[sd]/self.total_time) >= float(self.avg_flt_val):
 					x_list.append(sd)
 					y_list.append(self.src_addr[sd])
 					y_thr.append(self.flt_val)
