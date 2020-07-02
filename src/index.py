@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
-import analyser as anl
+import analyzer as anl
 import matplotlib.pyplot as plt
 
 class Window(Frame):
@@ -38,19 +38,19 @@ class Window(Frame):
 	"""
 	def init_window(self):
 		self.printLog("UI/UX", "window", "tkinter initiated")
-		self.master.title("HPE - Protocol Analyser")
+		self.master.title("HPE - Protocol analyzer")
 		self.pack(fill=BOTH, expand=1)
 
-		lbl = Label(self,text="HPE Protocol Analyser",font=("Courier", 25))
+		lbl = Label(self,text="HPE Protocol analyzer",font=("Courier", 25))
 		lbl.place(x=50,y=325)
 
 		quitButton = Button(self, text="Protocol Analysis", command=self.make_protocol_table)
 		quitButton.place(x=0, y=0)
-		quitButton = Button(self, text="Intrution Analysis",command=self.make_distrution_table)
+		quitButton = Button(self, text="Intrusion Analysis",command=self.make_distrution_table)
 		quitButton.place(x=150, y=0)
 
 	"""
-		This function will make the table for protocol analyser. It has 3 coloumns, 1st for name of protocol
+		This function will make the table for protocol analyzer. It has 3 coloumns, 1st for name of protocol
 		and 2nd for Frequency of the protocol, and 3rd for average packet per second.
 
 		@param null
@@ -304,7 +304,7 @@ class Window(Frame):
 			plt.show()
 			self.printLog("UI/UX","window","Graph terminated")
 		else:
-			self.printLog("System","process","Something is wrong with making intrution table")
+			self.printLog("System","process","Something is wrong with making Intrusion table")
 
 def main():
 	root = Tk()
